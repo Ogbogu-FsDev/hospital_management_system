@@ -4,7 +4,7 @@ import os
 import logging
 import re
 
-# Set up logging
+# Sets up logging
 log_folder = "D:/hospital_management_system/logs/"
 os.makedirs(log_folder, exist_ok=True)
 log_file = os.path.join(log_folder, "database.log")
@@ -31,7 +31,7 @@ def validate_password(password):
 
 # Hashes a password using SHA-256
 def hash_password(password):
-    return hashlib.sha256(password.encode()).hexdigest()
+    return hashlib.sha256(password.encode()).hexdigest() # type: ignore
 
 # Authenticates a user
 def authenticate_user(username, password):
@@ -86,7 +86,7 @@ def initialize_db():
         # Table for doctors
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS doctors (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id INTEGER PRIMARY KEY,
                 user_id INTEGER NOT NULL,
                 specialization TEXT NOT NULL,
                 years_of_experience INTEGER,
@@ -98,10 +98,10 @@ def initialize_db():
         # Table for nurses
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS nurses (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id INTEGER PRIMARY KEY,
                 user_id INTEGER NOT NULL,
                 department TEXT NOT NULL,
-                supervising_doctor INTEGER,
+                supervising_doctor TEXT,
                 status TEXT DEFAULT 'Active',
                 FOREIGN KEY(user_id) REFERENCES users(id),
                 FOREIGN KEY(supervising_doctor) REFERENCES doctors(id)
@@ -111,10 +111,10 @@ def initialize_db():
         # Table for receptionists
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS receptionists (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id INTEGER PRIMARY KEY,
                 user_id INTEGER NOT NULL,
                 department TEXT NOT NULL,
-                assigned_doctor INTEGER,
+                assigned_doctor TEXT,
                 status TEXT DEFAULT 'Active',
                 FOREIGN KEY(user_id) REFERENCES users(id),
                 FOREIGN KEY(assigned_doctor) REFERENCES doctors(id)
@@ -124,7 +124,7 @@ def initialize_db():
         # Table for patients
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS patients (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id INTEGER PRIMARY KEY,
                 title TEXT NOT NULL,
                 name TEXT NOT NULL,
                 age INTEGER,
@@ -188,17 +188,6 @@ def initialize_db():
                 FOREIGN KEY(patient_id) REFERENCES patients(id),
                 FOREIGN KEY(doctor_id) REFERENCES doctors(id),
                 FOREIGN KEY(nurse_id) REFERENCES nurses(id)
-            )
-        ''')
-        
-        # Table to assign nurses to patients
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS nurse_assignments (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nurse_id INTEGER NOT NULL,
-                patient_id INTEGER NOT NULL,
-                FOREIGN KEY(nurse_id) REFERENCES nurses(id),
-                FOREIGN KEY(patient_id) REFERENCES patients(id)
             )
         ''')
         
