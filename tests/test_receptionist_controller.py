@@ -1,34 +1,28 @@
 import sys
 import os
-import logging
+import unittest
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from controllers.receptionist_controller import ReceptionistController # type: ignore
-from database.db_manager import connect_db
+from controllers.receptionist_controller import ReceptionistController
 
-# Set up logging for test output
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def test_add_receptionist():
-    print("Testing add_receptionist...")
-    success = ReceptionistController.add_receptionist(user_id=2, department="Front Desk", assigned_doctor=1)
-    print("Add Receptionist Test:", "Passed" if success else "Failed")
+class TestReceptionistController(unittest.TestCase):
+    def test_add_nurse(self):
+        result = ReceptionistController.add_receptionist(
+            user_id=1, 
+            department="All Wards", 
+            assigned_doctor="Admin", 
+        )
+        self.assertTrue(result, "Failed to add receptionist")
 
-def test_list_receptionists():
-    print("Testing list_receptionists...")
-    receptionists = ReceptionistController.list_receptionists()
-    if receptionists:
-        print("List Receptionists Test: Passed")
-        for receptionist in receptionists:
-            print(receptionist)
-    else:
-        print("List Receptionists Test: Failed - No receptionists found")
+    def test_list_nurses(self):
+        receptionists = ReceptionistController.list_receptionists()
+        print(receptionists)
+        self.assertIsInstance(receptionists, list, "Receptionist should be returned as a list")
 
-def test_delete_receptionist():
-    print("Testing delete_receptionist...")
-    success = ReceptionistController.delete_receptionist(receptionist_id=1)  # Change ID based on existing records
-    print("Delete Receptionist Test:", "Passed" if success else "Failed")
+    def test_delete_nurse(self):
+        result = ReceptionistController.delete_receptionist(1)
+        self.assertTrue(result, "Failed to delete receptionist")
 
 if __name__ == "__main__":
-    test_add_receptionist()
-    test_list_receptionists()
-    test_delete_receptionist()
+    unittest.main()
+    print()
