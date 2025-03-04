@@ -16,6 +16,7 @@ class TestDoctorController(unittest.TestCase):
 
     def test_list_doctors(self):
         doctors = DoctorController.list_doctors()
+        print(doctors)
         self.assertIsInstance(doctors, list, "Doctors should be returned as a list")
 
     def test_delete_doctor(self):
@@ -24,3 +25,4 @@ class TestDoctorController(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+    print()
