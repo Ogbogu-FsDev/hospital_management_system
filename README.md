@@ -64,6 +64,8 @@ The database consists of multiple tables:
 - AI-powered diagnosis assistance
 - Multi-language support
 - Mobile app version
+- Face Recognition
+
 
 ---
 
