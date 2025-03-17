@@ -20,7 +20,7 @@ class LoginWindow(QWidget):
 
         # Add the logo above the window title
         self.logo_label = QLabel(self)
-        logo_pixmap = QPixmap("/hospital_management_system/ui/assets/images/HMS-Logo.png")  # Provide the path to your logo image
+        logo_pixmap = QPixmap("/hospital_management_system/ui/assets/HMS-Logo.png")  # Provide the path to your logo image
         scaled_logo = logo_pixmap.scaled(100, 100, Qt.AspectRatioMode.KeepAspectRatio)  # Scale the logo to 100x100 pixels
         self.logo_label.setPixmap(scaled_logo)
         self.logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -49,7 +49,7 @@ class LoginWindow(QWidget):
 
         # Show/Hide password toggle button with rounded style and icon
         self.show_password_button = QPushButton(self)
-        self.show_password_button.setIcon(QIcon("/hospital_management_system/ui/assets/images/hide-password-icon.png"))  # Initially show the eye icon for password visibility
+        self.show_password_button.setIcon(QIcon("/hospital_management_system/ui/assets/hide-password-icon.png"))  # Initially show the eye icon for password visibility
         self.show_password_button.setIconSize(QtCore.QSize(20, 20))  # Adjust icon size
         self.show_password_button.setStyleSheet("""
             QPushButton {
@@ -78,10 +78,10 @@ class LoginWindow(QWidget):
         # Toggle the echo mode and icon
         if self.password_input.echoMode() == QLineEdit.EchoMode.Password:
             self.password_input.setEchoMode(QLineEdit.EchoMode.Normal)
-            self.show_password_button.setIcon(QIcon("/hospital_management_system/ui/assets/images/hide-password-icon.png"))  # Change to eye-slash for hide
+            self.show_password_button.setIcon(QIcon("/hospital_management_system/ui/assets/hide-password-icon.png"))  # Change to eye-slash for hide
         else:
             self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
-            self.show_password_button.setIcon(QIcon("/hospital_management_system/ui/assets/images/show-password-icon.png"))  # Change to eye for show
+            self.show_password_button.setIcon(QIcon("/hospital_management_system/ui/assets/show-password-icon.png"))  # Change to eye for show
 
     def handle_login(self):
         username = self.username_input.text()
