@@ -4,93 +4,117 @@ from PyQt6.QtCore import Qt
 from PyQt6 import QtCore
 import sqlite3
 from ui.dashboard_window import DashboardWindow
-from ui.styles import bubble_style, button_style
+from ui.styles import bubble_style, button_style, toggle_button
 
 class LoginWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Hospital Management System - Login")
-        self.setGeometry(500, 250, 400, 250)
-        self.setStyleSheet("background-color: #ADD8E6;")  # Light Blue
+        self.setGeometry(500, 250, 400, 300)
+        self.setStyleSheet("background-color: #ADD8E6;")  # Light Blue Background
 
-        self.setMaximumSize(400, 250)  # Set maximum size for the window
-        self.setMinimumSize(400, 250)  # Set minimum size for the window
+        self.setMaximumSize(400, 300)
+        self.setMinimumSize(400, 300)
 
         layout = QVBoxLayout()
 
-        # Add the logo above the window title
+        # Add Logo Above Title
         self.logo_label = QLabel(self)
-        logo_pixmap = QPixmap("/hospital_management_system/ui/assets/HMS-Logo.png")  # Provide the path to your logo image
-        scaled_logo = logo_pixmap.scaled(100, 100, Qt.AspectRatioMode.KeepAspectRatio)  # Scale the logo to 100x100 pixels
+        logo_pixmap = QPixmap("/hospital_management_system/ui/assets/HMS-Logo.png")
+        scaled_logo = logo_pixmap.scaled(100, 100, Qt.AspectRatioMode.KeepAspectRatio)
         self.logo_label.setPixmap(scaled_logo)
         self.logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.logo_label)
 
+        # Login Title
         self.label = QLabel("User Login")
         self.label.setFont(QFont("Arial", 18, QFont.Weight.Bold))
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label.setStyleSheet("color: #333;")
         layout.addWidget(self.label)
 
+        # Username Input
         self.username_input = QLineEdit(self)
         self.username_input.setPlaceholderText("Enter Username")
         self.username_input.setStyleSheet(bubble_style())
         layout.addWidget(self.username_input)
 
-        # Layout for password field and toggle button
+        # Password Input & Toggle Button
         password_layout = QHBoxLayout()
 
         self.password_input = QLineEdit(self)
         self.password_input.setPlaceholderText("Enter Password")
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
         self.password_input.setStyleSheet(bubble_style())
-        self.password_input.returnPressed.connect(self.handle_login)  # Login on "Enter"
+        self.password_input.returnPressed.connect(self.handle_login)
         password_layout.addWidget(self.password_input)
 
-        # Show/Hide password toggle button with rounded style and icon
         self.show_password_button = QPushButton(self)
-        self.show_password_button.setIcon(QIcon("/hospital_management_system/ui/assets/hide-password-icon.png"))  # Initially show the eye icon for password visibility
-        self.show_password_button.setIconSize(QtCore.QSize(20, 20))  # Adjust icon size
-        self.show_password_button.setStyleSheet("""
-            QPushButton {
-                background-color: #fff;
-                border-radius: 12px;
-                padding: 5px;
-                border: 2px solid #ADD8E6;
-            }
-            QPushButton:hover {
-                background-color: #ADD8E6;
-            }
-        """)
+        self.show_password_button.setIcon(QIcon("/hospital_management_system/ui/assets/hide-password-icon.png"))
+        self.show_password_button.setIconSize(QtCore.QSize(20, 20))
+        self.show_password_button.setStyleSheet(toggle_button())
         self.show_password_button.clicked.connect(self.toggle_password_visibility)
         password_layout.addWidget(self.show_password_button)
 
         layout.addLayout(password_layout)
 
+        # Buttons Layout
+        button_layout = QHBoxLayout()
+
+        # Login Button
         self.login_button = QPushButton("Login")
         self.login_button.setStyleSheet(button_style())
         self.login_button.clicked.connect(self.handle_login)
-        layout.addWidget(self.login_button)
+        button_layout.addWidget(self.login_button)
+
+        # Forgot Password Button
+        self.forgot_password_button = QPushButton("Forgot Password?")
+        self.forgot_password_button.setStyleSheet("background-color: #FF4500; color: white; padding: 8px; border-radius: 10px;")
+        self.forgot_password_button.clicked.connect(self.handle_forgot_password)
+        button_layout.addWidget(self.forgot_password_button)
+
+        # Admin Assistance Button
+        self.admin_assist_button = QPushButton("Call Admin Assistance")
+        self.admin_assist_button.setStyleSheet("background-color: #FFD700; color: black; padding: 8px; border-radius: 10px;")
+        self.admin_assist_button.clicked.connect(self.handle_admin_assistance)
+        button_layout.addWidget(self.admin_assist_button)
+
+        layout.addLayout(button_layout)
+
+        # Face Recognition Login Button
+        self.face_recog_button = QPushButton("Face Recognition Login")
+        self.face_recog_button.setFont(QFont("Arial", 12, QFont.Weight.Bold))
+        self.face_recog_button.setStyleSheet("background-color: #1E90FF; color: white; padding: 10px; border-radius: 10px; margin-top: 10px;")
+        self.face_recog_button.clicked.connect(self.handle_face_recognition)
+        layout.addWidget(self.face_recog_button)
 
         self.setLayout(layout)
 
     def toggle_password_visibility(self):
-        # Toggle the echo mode and icon
         if self.password_input.echoMode() == QLineEdit.EchoMode.Password:
             self.password_input.setEchoMode(QLineEdit.EchoMode.Normal)
-            self.show_password_button.setIcon(QIcon("/hospital_management_system/ui/assets/hide-password-icon.png"))  # Change to eye-slash for hide
+            self.show_password_button.setIcon(QIcon("/hospital_management_system/ui/assets/hide-password-icon.png"))
         else:
             self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
-            self.show_password_button.setIcon(QIcon("/hospital_management_system/ui/assets/show-password-icon.png"))  # Change to eye for show
+            self.show_password_button.setIcon(QIcon("/hospital_management_system/ui/assets/show-password-icon.png"))
 
     def handle_login(self):
         username = self.username_input.text()
         password = self.password_input.text()
 
         if self.authenticate_user(username, password):
-            self.open_dashboard()
+            self.open_dashboard(username)
         else:
             QMessageBox.critical(self, "Login Failed", "Invalid username or password!")
+
+    def handle_forgot_password(self):
+        QMessageBox.information(self, "Forgot Password", "Contact IT Support to reset your password.")
+
+    def handle_admin_assistance(self):
+        QMessageBox.warning(self, "Admin Assistance", "Calling admin for assistance...")
+
+    def handle_face_recognition(self):
+        QMessageBox.information(self, "Face Recognition", "Face recognition login triggered!")
 
     def authenticate_user(self, username, password):
         try:
@@ -109,7 +133,7 @@ class LoginWindow(QWidget):
             print("Database Error:", e)
             return False
 
-    def open_dashboard(self):
-        self.dashboard = DashboardWindow(self.user_role)
+    def open_dashboard(self, username):
+        self.dashboard = DashboardWindow(self.user_role, username)
         self.dashboard.show()
         self.close()
