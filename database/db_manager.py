@@ -5,16 +5,15 @@ import logging
 import re
 
 # Sets up logging
-log_folder = "D:/hospital_management_system/logs/"
+log_folder = "/hospital_management_system/logs/"
 os.makedirs(log_folder, exist_ok=True)
 log_file = os.path.join(log_folder, "database.log")
-logging.basicConfig(filename=log_file, level=logging.INFO, 
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Establishes a connection to the SQLite database and returns the connection object
 def connect_db():
     try:
-        return sqlite3.connect("D:/hospital_management_system/database/hospital.db")
+        return sqlite3.connect("/hospital_management_system/database/hospital.db")
     except sqlite3.Error as e:
         logging.error(f"Database connection error: {e}")
         return None
@@ -61,27 +60,33 @@ def initialize_db():
     try:
         cursor = conn.cursor()
         
-        # Table for all users
+        # Table for all users (Healthcare Staff)
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL,
-                role TEXT NOT NULL,
-                title TEXT NOT NULL,
-                name TEXT NOT NULL,
+                role TEXT CHECK(role IN ('Admin', 'Doctor', 'Nurse', 'Receptionist', 'Lab Technician', 'Pharmacist', 'Accountant', 'HR', 'IT Support')),
+                title TEXT CHECK(title IN ('Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.', 'Prof.', 'Sir')),
+                name TEXT,
+                date_of_birth DATE,
+                gender TEXT CHECK(gender IN ('Male', 'Female', 'Other')),
                 phone TEXT,
-                email TEXT UNIQUE NOT NULL,
-                address TEXT
+                email TEXT,
+                address TEXT,
+                department TEXT CHECK(department IN ('General Medicine', 'Surgery', 'Pediatrics', 'Emergency', 'Radiology', 'Cardiology', 'Neurology', 'Pharmacy', 'Administration', 'HR', 'IT')),
+                specialization TEXT,  -- Only relevant for medical staff
+                employment_date DATE NOT NULL DEFAULT CURRENT_DATE,
+                status TEXT CHECK(status IN ('Active', 'On Leave', 'Resigned', 'Retired')) DEFAULT 'Active'
             )
         ''')
         
         # Insert default admin account
         cursor.execute('''
-            INSERT OR IGNORE INTO users (username, password, role, title, name, phone, email, address)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
-            ("Admin", hash_password("7f-Ge&2RS-a0"), "admin", "Mr.", "Admin User", "", "admin@example.com", "")
-        )
+        INSERT INTO users (username, password, role, title, name, date_of_birth, gender, phone, email, address, department, specialization, employment_date, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+        ('admin', 'password', 'Admin', 'Mr.', 'Default Admin', '1985-06-15', 'Male', '1234567890', 'admin@example.com', '123 Hospital St.', 'IT', 'IT Administration', '2023-01-10', 'Active'))
+
         
         # Table for doctors
         cursor.execute('''
@@ -196,6 +201,7 @@ def initialize_db():
         print("Database initialized successfully.")
     except sqlite3.Error as e:
         logging.error(f"Error initializing database: {e}")
+        print(f"Error initializing database: {e}")
     finally:
         conn.close()
 
