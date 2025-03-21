@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 class AdminController:
     # Adds a new user to the system
     @staticmethod
-    def add_user(username, password, role, title, name, phone, email, address):
+    def add_user(username, password, role, title, name, date_of_birth, gender, phone, email, address, department, specialization, employment_date, status):
         conn = connect_db()
         if conn is None:
             logging.error("Database connection failed.")
@@ -18,9 +18,9 @@ class AdminController:
         try:
             cursor = conn.cursor()
             cursor.execute("""
-                INSERT INTO users (username, password, role, title, name, phone, email, address)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
-                (username, hash_password(password), role, title, name, phone, email, address))
+                INSERT INTO users (username, password, role, title, name, date_of_birth, gender, phone, email, address, department, specialization, employment_date, status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                (username, hash_password(password), role, title, name, date_of_birth, gender, phone, email, address, department, specialization, employment_date, status))
             conn.commit()
             logging.info(f"User {username} added successfully.")
             return True
@@ -32,22 +32,23 @@ class AdminController:
     
     # Deletes a user from the system
     @staticmethod
-    def delete_user(username):
+    def delete_user(user_id):
         conn = connect_db()
         if conn is None:
             logging.error("Database connection failed.")
             return False
         try:
             cursor = conn.cursor()
-            cursor.execute("DELETE FROM users WHERE username = ?", (username,))
+            cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
             conn.commit()
-            logging.info(f"User {username} deleted successfully.")
+            logging.info(f"User {user_id} deleted successfully.")
             return True
         except Exception as e:
-            logging.error(f"Error deleting user: {e}")
+            logging.error(f"Error deleting user {user_id}: {e}")
             return False
         finally:
             conn.close()
+
     
     # Retrieves a list of all users in the system
     @staticmethod
@@ -58,7 +59,7 @@ class AdminController:
             return []
         try:
             cursor = conn.cursor()
-            cursor.execute("SELECT id, username, role, name FROM users")
+            cursor.execute("SELECT * FROM users")  # Get all columns from the users table
             users = cursor.fetchall()
             return users
         except Exception as e:
@@ -71,7 +72,7 @@ class AdminController:
     @staticmethod
     def view_logs():
         try:
-            with open("D:/hospital_management_system/logs/database.log", "r") as log_file:
+            with open("/hospital_management_system/logs/database.log", "r") as log_file:
                 return log_file.readlines()
         except FileNotFoundError:
             logging.error("Log file not found.")
