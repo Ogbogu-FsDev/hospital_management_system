@@ -1,8 +1,8 @@
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import logging  # Import the logging module to keep track of admin actions in a log file
-from database.db_manager import connect_db, hash_password  # Import database connection and password hashing functions
+import logging
+from database.db_manager import connect_db, hash_password
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -59,7 +59,7 @@ class AdminController:
             return []
         try:
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM users")  # Get all columns from the users table
+            cursor.execute("SELECT * FROM users")
             users = cursor.fetchall()
             return users
         except Exception as e:
