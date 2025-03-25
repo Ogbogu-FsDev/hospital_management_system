@@ -1,7 +1,6 @@
 from PyQt6.QtWidgets import (
     QFrame, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QLineEdit, QFormLayout,
-    QComboBox, QMessageBox, QTableWidget, QTableWidgetItem, QHeaderView, QDateEdit,
-    QSpacerItem, QSizePolicy, QScrollArea
+    QComboBox, QMessageBox, QTableWidget, QTableWidgetItem, QDateEdit,
 )
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt, QDate
@@ -31,7 +30,7 @@ def user_management(dashboard_window):
 
     # User Table with Bubble Theme
     user_table = QTableWidget()
-    user_table.setColumnCount(14)  # We have 9 columns
+    user_table.setColumnCount(14)
     
     user_table.setHorizontalHeaderLabels([ 
         "ID", "User", "Title", "Name", "Gender", "DOB", 
@@ -76,7 +75,7 @@ def user_management(dashboard_window):
     load_users()
 
     # Main layout for input fields
-    input_layout = QFormLayout()  # Use QFormLayout to align labels and input fields
+    input_layout = QFormLayout()
 
     # Title Input
     title_input = QComboBox()
@@ -112,8 +111,8 @@ def user_management(dashboard_window):
     # Date of Birth Input
     dob_input = QDateEdit()
     dob_input.setCalendarPopup(True)
-    dob_input.setDate(QDate.currentDate())  # Default to current date
-    dob_input.setDisplayFormat("dd-MM-yyyy")  # Set date format to dd-MM-yyyy
+    dob_input.setDate(QDate.currentDate())
+    dob_input.setDisplayFormat("dd-MM-yyyy")
     dob_input.setStyleSheet(bubble_card_style())
     input_layout.addRow(QLabel("Date of Birth:"), dob_input)
 
@@ -149,14 +148,14 @@ def user_management(dashboard_window):
 
     # **Department Label and Dropdown Input**
     department_input = QComboBox()
-    department_input.addItems(["Dept.", "General", "Cardiology", "Neurology", "Orthopedics", "Pediatrics", "Surgery", "Radiology"])  # Example departments
+    department_input.addItems(["General", "Cardiology", "Neurology", "Orthopedics", "Pediatrics", "Surgery", "Radiology"]) 
     department_input.setStyleSheet(bubble_card_style()) 
     input_layout.addRow(QLabel("Department:"), department_input)
 
     # Employment Date (Non-editable)
     employment_date_input = QLineEdit()
     employment_date_input.setText(QDate.currentDate().toString("dd-MM-yyyy"))
-    employment_date_input.setReadOnly(True)  # Make it non-editable
+    employment_date_input.setReadOnly(True) 
     employment_date_input.setStyleSheet(bubble_card_style())
     input_layout.addRow(QLabel("Employment Date:"), employment_date_input)
 
@@ -196,12 +195,12 @@ def user_management(dashboard_window):
         title = title_input.currentText()
 
         # New input fields
-        date_of_birth = dob_input.text()  # Get the date of birth from the QDateEdit input
-        gender = gender_input.currentText()  # Get gender from the dropdown
-        department = department_input.currentText()  # Get department from the dropdown
-        specialization = specialization_input.text()  # Get specialization
-        employment_date = employment_date_input.text()  # The employment date is static (non-editable)
-        status = "Active"  # Assuming the default status is "Active"
+        date_of_birth = dob_input.text()  
+        gender = gender_input.currentText() 
+        department = department_input.currentText()  
+        specialization = specialization_input.text()  
+        employment_date = employment_date_input.text()  
+        status = "Active"  # Get the default status is "Active"
 
         # Validate required fields
         if not username or not password or not name or not email:
